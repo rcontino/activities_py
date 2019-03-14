@@ -1,4 +1,6 @@
 from flask import Flask, render_template, json, request
+import connection
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -9,14 +11,17 @@ def main():
 def submit():
 
     # read the posted values from the UI
+
     _activityName = request.form['activityName']
-    _description = request.form['description']
+    _description = request.form['inputDescription']
 
     # validate the received values
     if _activityName and _description:
-        return json.dumps({'html':'<span>All fields good !!</span>'})
+
+        print("More to come here")
     else:
         return json.dumps({'html':'<span>Enter the required fields</span>'})
+
 
 if __name__ == "__main__":
     app.run()
