@@ -1,5 +1,5 @@
 from flask import Flask, render_template, json, request
-import connection
+import connection as c
 
 app = Flask(__name__)
 
@@ -11,17 +11,14 @@ def main():
 def submit():
 
     # read the posted values from the UI
-
     _activityName = request.form['activityName']
     _description = request.form['inputDescription']
 
     # validate the received values
     if _activityName and _description:
-
-        print("More to come here")
+        c.insert( _activityName, _description )
     else:
-        return json.dumps({'html':'<span>Enter the required fields</span>'})
-
+        print( "Invalid input")
 
 if __name__ == "__main__":
     app.run()
