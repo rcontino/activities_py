@@ -20,5 +20,29 @@ def submit():
     else:
         print( "Invalid input")
 
+    tallyVotes()
+
+def tallyVotes():
+    # Get comments by post ID
+    id = "47"
+    activityNames = c.getActivityNames( id )
+    comments = c.getComments( id )
+
+    for activity in activityNames :
+        # check to see if the comment contains one of the activity names and 'yes'
+        # if yes, update the proposed activity with the same name and post_id
+        for comment in comments :
+            if ((activity[0] in comment[0]) and ('yes' in comment[0])) :        
+                priorScore = c.getActivityScore( activity )
+                newScore = priorScore[0] + 1
+                print (activity, comment, newScore)
+                c.updateVoteScore( newScore, id, activity )
+
+
+
+
+
+
+
 if __name__ == "__main__":
     app.run()
