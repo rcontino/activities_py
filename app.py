@@ -1,4 +1,6 @@
 from flask import Flask, render_template, json, request
+from datetime import datetime, timedelta
+from dateutil import parser
 import connection as c
 
 app = Flask(__name__)
@@ -6,6 +8,7 @@ app = Flask(__name__)
 @app.route("/")
 def main():
     tallyVotes()
+    expirePosts()
     return render_template('index.html')
 
 @app.route("/submit", methods=['POST'])
@@ -34,7 +37,17 @@ def tallyVotes():
 
             c.updateVoteScore( activityVotes, post[0], activity )
 
-#def expirePosts():
+def expirePosts():
+    print("Expiring posts")
+    posts = c.getDataByParameter('ID', 'publish', 'post_status', 'wp_posts')
+    for post in posts :
+        postDate = c.getDataByParameter('post_date', str(post[0]), 'ID', 'wp_posts')
+        pyDate = datetime.strptime(str(postDate[0][0]), '%Y-%m-%d %H:%M:%S')
+        delta = datetime.now() - pyDate
+        print(delta)
+
+        if (delta > timedelta(days = 7)):
+            c.updateCommentStatus(post[0])
 
 if __name__ == "__main__":
     app.run()

@@ -5,7 +5,7 @@ def connect () :
     cursor = connection.cursor()
     return connection, cursor
 
-def executeInsert ( cur, _activityName, _description ) :
+def executeInsert ( cursor, _activityName, _description ) :
     insert = "INSERT INTO `proposed_activities` (timestamp, name, description, score, post_id) VALUES (CURRENT_TIMESTAMP, '" + _activityName + "', '" + _description + "' , '0', '54');"
     connection, cursor = connect()
     cursor.execute( insert )
@@ -30,6 +30,15 @@ def updateVoteScore (  newScore, postId, activity ) :
     connection.commit()
     print("Score updated")
     connection.close()
+
+def updateCommentStatus ( postId ) :
+    connection, cursor = connect()
+    query = "UPDATE wp_posts SET comment_status = 'closed' WHERE ID = " + str(postId) + ";"
+    print (query)
+    cursor.execute( query )
+    connection.commit()
+    print("Comment Status updated")
+    connection.close()    
 
 def getDataByParameter ( column, specifier, specifierColumn, table ) :
     connection, cursor = connect()
