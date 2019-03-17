@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
+    tallyVotes()
     return render_template('index.html')
 
 @app.route("/submit", methods=['POST'])
@@ -19,30 +20,21 @@ def submit():
         c.insert( _activityName, _description )
     else:
         print( "Invalid input")
-
-    tallyVotes()
-
+        
 def tallyVotes():
-    # Get comments by post ID
-    id = "47"
-    activityNames = c.getActivityNames( id )
-    comments = c.getComments( id )
+    posts = c.getDataByParameter('ID', 'publish', 'post_status', 'wp_posts')
+    for post in posts :
+        activityNames = c.getDataByParameter( 'name', str(post[0]), 'post_id', 'proposed_activities' )
+        for activity in activityNames :
+            activityVotes = 0
+            comments = c.getDataByParameter('comment_content', str(post[0]), 'comment_post_ID', 'wp_comments')
+            for comment in comments :
+                if ((activity[0].lower() in comment[0].lower()) and ('yes' in comment[0].lower())) :        
+                    activityVotes = activityVotes + 1
 
-    for activity in activityNames :
-        # check to see if the comment contains one of the activity names and 'yes'
-        # if yes, update the proposed activity with the same name and post_id
-        for comment in comments :
-            if ((activity[0] in comment[0]) and ('yes' in comment[0])) :        
-                priorScore = c.getActivityScore( activity )
-                newScore = priorScore[0] + 1
-                print (activity, comment, newScore)
-                c.updateVoteScore( newScore, id, activity )
+            c.updateVoteScore( activityVotes, post[0], activity )
 
-
-
-
-
-
+#def expirePosts():
 
 if __name__ == "__main__":
     app.run()
