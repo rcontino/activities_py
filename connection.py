@@ -9,7 +9,7 @@ def executeInsert ( cur, _activityName, _description ) :
     insert = "INSERT INTO `proposed_activities` (timestamp, name, description, score, post_id) VALUES (CURRENT_TIMESTAMP, '" + _activityName + "', '" + _description + "' , '0', '54');"
     connection, cursor = connect()
     cursor.execute( insert )
-    cursor.commit()
+    connection.commit()
 
     for name, score in cursor.fetchall() :
         print ( name, score )
@@ -18,7 +18,7 @@ def executeInsert ( cur, _activityName, _description ) :
 
 def insert ( _activityName, _description ) :
     connection, cursor = connect()
-    executeInsert ( cur, _activityName, _description )
+    executeInsert ( cursor, _activityName, _description )
     print("Proposed Activity Inserted")
     connection.close()
 
