@@ -12,22 +12,16 @@
                 url: '/getActivePosts',
                 type: 'GET',
                 success: function(res) {
-                        
-                    var option = $('<option>')
-                    .append($('<option>')
-                        .attr('class', 'form-control')
-                        .attr('type', 'postName')
-                        .attr('name', 'postName')
-                        .attr('id', 'postName'));                     
-
-                    var postObj = JSON.parse(res); 
+                           						
+                    var postObj = JSON.parse(res);
                     var post = '';
-
-                    $.each(postObj, function(index, value) {
+                    
+                    $.each(postObj,function(index, value){
+                        var option = $('<option>').attr('class', 'drop-option').text(value.name); 
                         post = $(option).clone();
-                        $(post).find('option').text(value.name);
-                        $('.list').append(post);
-                    });       
+                        $('.form-control').append(post);
+                    }); 
+                    
                 },
                 error: function(error) {
                     console.log(error);
@@ -52,7 +46,7 @@
             <label for="inputDescription" class="sr-only">Description</label>
             <input type="description" name="inputDescription" id="inputDescription" class="form-control" placeholder="Description" required autofocus>
 
-            <select class = "list">
+            <select type = 'postName' name = 'postName' id= 'postName' class = "form-control">
 
             </select>
 

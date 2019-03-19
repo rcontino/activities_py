@@ -37,10 +37,16 @@ def tallyVotes():
 
 @app.route("/submit", methods=['POST'])
 def submit():
+
+    print("Before")
+
     # read the posted values from the UI
     _activityName = request.form['activityName']
+    print("ActivityName: " + _activityName)
     _description = request.form['inputDescription']
+    print("Description: " + _description)
     _postName = request.form['postName']
+    print("PostName: " + _postName)
 
     # validate the received values
     if _activityName and _description and _postName:
