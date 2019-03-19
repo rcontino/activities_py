@@ -12,19 +12,19 @@
                 url: '/getActivePosts',
                 type: 'GET',
                 success: function(res) {
-
-                    var div = $('<div>')
-                    .attr('class', 'list-group')
-                    .append($('<select>')
-                        .attr('class', 'list-group-item active')
-                        .append($('<option>')
-                            .attr('class', 'list-group-item-text'))); 
+                        
+                    var option = $('<option>')
+                    .append($('<option>')
+                        .attr('class', 'form-control')
+                        .attr('type', 'postName')
+                        .attr('name', 'postName')
+                        .attr('id', 'postName'));                     
 
                     var postObj = JSON.parse(res); 
                     var post = '';
 
                     $.each(postObj, function(index, value) {
-                        post = $(div).clone();
+                        post = $(option).clone();
                         $(post).find('option').text(value.name);
                         $('.list').append(post);
                     });       
@@ -52,9 +52,9 @@
             <label for="inputDescription" class="sr-only">Description</label>
             <input type="description" name="inputDescription" id="inputDescription" class="form-control" placeholder="Description" required autofocus>
 
-            <div class="list">
+            <select class = "list">
 
-            </div>
+            </select>
 
             <button id="btnSubmit" class="btn btn-lg btn-primary btn-block" type="button" onclick="window.location.href='http://localhost/wordpress/'">Submit</button>
         </form>

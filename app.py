@@ -7,22 +7,21 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
-    tallyVotes()
-    closeComments()
     return render_template('index.html')
 
-@app.route("/submit", methods=['POST'])
-def submit():
-    # read the posted values from the UI
-    _activityName = request.form['activityName']
-    _description = request.form['inputDescription']
+@app.route("/closecomments")
+def closeComments():
+    posts = c.getDataByParameter('ID', 'publish', 'post_status', 'wp_posts')
+    for post in posts :
+        postDate = c.getDataByParameter('post_date', str(post[0]), 'ID', 'wp_posts')
+        pyDate = datetime.strptime(str(postDate[0][0]), '%Y-%m-%d %H:%M:%S')
+        delta = datetime.now() - pyDate
+        print(delta)
 
-    # validate the received values
-    if _activityName and _description:
-        c.insert( _activityName, _description )
-    else:
-        print( "Invalid input")
-        
+        if (delta > timedelta(days = 7)):
+            c.updateCommentStatus(post[0])
+
+@app.route("/tally")
 def tallyVotes():
     posts = c.getDataByParameter('ID', 'publish', 'post_status', 'wp_posts')
     for post in posts :
@@ -36,16 +35,18 @@ def tallyVotes():
 
             c.updateVoteScore( activityVotes, post[0], activity )
 
-def closeComments():
-    posts = c.getDataByParameter('ID', 'publish', 'post_status', 'wp_posts')
-    for post in posts :
-        postDate = c.getDataByParameter('post_date', str(post[0]), 'ID', 'wp_posts')
-        pyDate = datetime.strptime(str(postDate[0][0]), '%Y-%m-%d %H:%M:%S')
-        delta = datetime.now() - pyDate
-        print(delta)
+@app.route("/submit", methods=['POST'])
+def submit():
+    # read the posted values from the UI
+    _activityName = request.form['activityName']
+    _description = request.form['inputDescription']
+    _postName = request.form['postName']
 
-        if (delta > timedelta(days = 7)):
-            c.updateCommentStatus(post[0])
+    # validate the received values
+    if _activityName and _description and _postName:
+        c.insert( _activityName, _description, _postName )
+    else:
+        print( "Invalid input")
 
 @app.route('/getActivePosts')
 def getActivePosts():

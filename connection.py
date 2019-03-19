@@ -5,8 +5,8 @@ def connect () :
     cursor = connection.cursor()
     return connection, cursor
 
-def executeInsert ( cursor, _activityName, _description ) :
-    insert = "INSERT INTO `proposed_activities` (timestamp, name, description, score, post_id) VALUES (CURRENT_TIMESTAMP, '" + _activityName + "', '" + _description + "' , '0', '54');"
+def executeInsert ( cursor, _activityName, _description, id ) :
+    insert = "INSERT INTO `proposed_activities` (timestamp, name, description, score, post_id) VALUES (CURRENT_TIMESTAMP, '" + _activityName + "', '" + _description + "' , '0', '" + str(id[0][0]) + "');"
     connection, cursor = connect()
     cursor.execute( insert )
     connection.commit()
@@ -16,9 +16,11 @@ def executeInsert ( cursor, _activityName, _description ) :
 
     connection.close()
 
-def insert ( _activityName, _description ) :
+def insert ( _activityName, _description, _postName ) :
     connection, cursor = connect()
-    executeInsert ( cursor, _activityName, _description )
+    id = getDataByParameter('ID', _postName, 'post_name', 'wp_posts')
+    executeInsert ( cursor, _activityName, _description, id )
+
     print("Proposed Activity Inserted")
     connection.close()
 
