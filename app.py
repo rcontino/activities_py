@@ -8,12 +8,11 @@ app = Flask(__name__)
 @app.route("/")
 def main():
     tallyVotes()
-    expirePosts()
+    closeComments()
     return render_template('index.html')
 
 @app.route("/submit", methods=['POST'])
 def submit():
-
     # read the posted values from the UI
     _activityName = request.form['activityName']
     _description = request.form['inputDescription']
@@ -37,8 +36,7 @@ def tallyVotes():
 
             c.updateVoteScore( activityVotes, post[0], activity )
 
-def expirePosts():
-    print("Expiring posts")
+def closeComments():
     posts = c.getDataByParameter('ID', 'publish', 'post_status', 'wp_posts')
     for post in posts :
         postDate = c.getDataByParameter('post_date', str(post[0]), 'ID', 'wp_posts')
@@ -48,6 +46,14 @@ def expirePosts():
 
         if (delta > timedelta(days = 7)):
             c.updateCommentStatus(post[0])
+
+@app.route('/getActivePosts')
+def getActivePosts():
+    print("getActivePosts was called successfully")
+    query = "SELECT post_name FROM wp_posts WHERE post_status = 'publish' AND comment_status = 'open'"
+    postJson = c.getDataByQuery( query )
+
+    return postJson
 
 if __name__ == "__main__":
     app.run()

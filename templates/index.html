@@ -2,28 +2,63 @@
 <html lang="en">
   <head>
     <title>Submit Activity</title>
- 
-    <!--<link href="../static/activity.css" rel="stylesheet">-->
     <script src="../static/js/jquery-1.11.2.js"></script>
     <script src="../static/js/submit.js"></script>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <script>
+        $(function() {
+            $.ajax({
+                url: '/getActivePosts',
+                type: 'GET',
+                success: function(res) {
+
+                    var div = $('<div>')
+                    .attr('class', 'list-group')
+                    .append($('<select>')
+                        .attr('class', 'list-group-item active')
+                        .append($('<option>')
+                            .attr('class', 'list-group-item-text'))); 
+
+                    var postObj = JSON.parse(res); 
+                    var post = '';
+
+                    $.each(postObj, function(index, value) {
+                        post = $(div).clone();
+                        $(post).find('option').text(value.name);
+                        $('.list').append(post);
+                    });       
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+
   </head>
+
+  
  
   <body>
  
     <div class="container">
  
-      <div class="jumbotron">
+      <div class="activity">
         <h1>Submit Activity</h1>
         <form class="form-submit-activity">
             <label for="inputActivityName" class="sr-only">Activity Name</label>
             <input type="activityName" name="activityName" id="activityName" class="form-control" placeholder="Activity Name" required autofocus>
             <label for="inputDescription" class="sr-only">Description</label>
             <input type="description" name="inputDescription" id="inputDescription" class="form-control" placeholder="Description" required autofocus>
-         
+
+            <div class="list">
+
+            </div>
+
             <button id="btnSubmit" class="btn btn-lg btn-primary btn-block" type="button" onclick="window.location.href='http://localhost/wordpress/'">Submit</button>
         </form>
       </div>
- 
     </div>
   </body>
 </html>

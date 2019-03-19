@@ -1,4 +1,4 @@
-import pymysql
+import pymysql, json
 
 def connect () :
     connection = pymysql.connect( host="", user="", passwd="", db="" )
@@ -53,3 +53,20 @@ def getDataByParameter ( column, specifier, specifierColumn, table ) :
     connection.close()
 
     return results
+
+def getDataByQuery ( query ) :
+    connection, cursor = connect()
+    cursor.execute( query )
+
+    posts_dict = []
+    for post in cursor.fetchall():
+        post_dict = {
+                'name': post[0]
+        }
+        posts_dict.append(post_dict)
+
+    connection.close()    
+
+    print(json.dumps(posts_dict))
+    return json.dumps(posts_dict)
+     
