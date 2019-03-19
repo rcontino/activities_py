@@ -21,8 +21,11 @@ def closeComments():
         if (delta > timedelta(days = 7)):
             c.updateCommentStatus(post[0])
 
+    return render_template('commentsClosed.html')
+
 @app.route("/tally")
 def tallyVotes():
+    print("In tally")
     posts = c.getDataByParameter('ID', 'publish', 'post_status', 'wp_posts')
     for post in posts :
         activityNames = c.getDataByParameter( 'name', str(post[0]), 'post_id', 'proposed_activities' )
@@ -34,6 +37,8 @@ def tallyVotes():
                     activityVotes = activityVotes + 1
 
             c.updateVoteScore( activityVotes, post[0], activity )
+
+    return render_template('tallied.html')
 
 @app.route("/submit", methods=['POST'])
 def submit():
